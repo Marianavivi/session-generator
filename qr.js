@@ -8,11 +8,11 @@ const fs = require('fs');
 const router = express.Router();
 const pino = require('pino');
 const {
-  default: Maher_Zubair,
+  default: makeWASocket,
   useMultiFileAuthState,
   Browsers,
   delay,
-} = require('maher-zubair-baileys');
+} = require('@whiskeysockets/baileys');
 
 // Function to remove a file
 function removeFile(FilePath) {
@@ -22,7 +22,7 @@ function removeFile(FilePath) {
       force: true,
     });
   }
-};
+}
 
 router.get('/', async (req, res) => {
   const id = makeid();
@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
     const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
 
     try {
-      const Qr_Code_By_MARIANA = Mariana({
+      const Qr_Code_By_Mariana = makeWASocket({
         auth: state,
         printQRInTerminal: false,
         logger: pino({ level: 'silent' }),
@@ -51,14 +51,14 @@ router.get('/', async (req, res) => {
           const data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);
           await delay(800);
           const b64data = Buffer.from(data).toString('base64');
-          const session = await .sendMessage(Qr_Code_By_Mariana.user.id, { text: 'Culture~;;;' + b64data });
+          const session = await Qr_Code_By_Mariana.sendMessage(Qr_Code_By_Mariana.user.id, { text: 'Culture~;;;' + b64data });
 
           const CULTURE_TEXT = `
           *_QR Code By Mariana_*
           *_Made With 🤍_*
 
           _Don't Forget To Give Star To My Repo_`;
-          await Qr_Code_By_Mariana.sendMessage(.user.id, { text: CULTURE_TEXT }, { quoted: session });
+          await Qr_Code_By_Mariana.sendMessage(Qr_Code_By_Mariana.user.id, { text: CULTURE_TEXT }, { quoted: session });
 
           await delay(100);
           await Qr_Code_By_Mariana.ws.close();
@@ -77,7 +77,7 @@ router.get('/', async (req, res) => {
     }
   }
 
-  return await SIGMA_MD_QR_CODE();
+  return await CULTURE_QR_CODE();
 });
 
 module.exports = router;
