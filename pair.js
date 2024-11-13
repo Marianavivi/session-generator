@@ -76,7 +76,7 @@ router.get('/', async (req, res) => {
                     await Marianavivi.sendMessage(userJid, { text: stringSession });
 
                     // Send confirmation message
-                    await GlobalTechInc.sendMessage(userJid, { text: '
+                    await Marianavivi.sendMessage(userJid, { text: '
 > *🔑 ABOVE IS YOUR SESSION ID.*
 *🔧 USE IT TO DEPLOY YOUR BOT.*
 ╔═════◇
