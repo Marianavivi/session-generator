@@ -1,88 +1,107 @@
-const PastebinAPI = require('pastebin-js');
-const pastebin = new PastebinAPI('EMWTMkQAVfJa9kM-MRUrxd5Oku1U7pgL');
-const { makeid } = require('./id');
-const express = require('express');
-const fs = require('fs');
-const router = express.Router();
-const pino = require('pino');
-const {
-  default: makeWASocket,
-  useMultiFileAuthState,
-  delay,
-  makeCacheableSignalKeyStore,
-  Browsers,
-} = require('@whiskeysockets/baileys');
+import express from 'express';
+import fs from 'fs';
+import pino from 'pino';
+import { makeWASocket, useMultiFileAuthState, delay, makeCacheableSignalKeyStore, Browsers, jidNormalizedUser } from '@whiskeysockets/baileys';
+import { upload } from './mega.js';
 
-// Function to remove a file
+const router = express.Router();
+
+// Ensure the session directory exists
 function removeFile(FilePath) {
-  if (fs.existsSync(FilePath)) {
-    fs.rmSync(FilePath, { recursive: true, force: true });
-  }
+    try {
+        if (!fs.existsSync(FilePath)) return false;
+        fs.rmSync(FilePath, { recursive: true, force: true });
+    } catch (e) {
+        console.error('Error removing file:', e);
+    }
 }
 
 router.get('/', async (req, res) => {
-  const id = makeid();
-  let num = req.query.number;
+    let num = req.query.number;
+    let dirs = './' + (num || `session`);
+    
+    // Remove existing session if present
+    await removeFile(dirs);
+    
+    async function initiateSession() {
+        const { state, saveCreds } = await useMultiFileAuthState(dirs);
 
-  async function CULTURE_PAIR_CODE() {
-    const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
-    try {
-      const Pair_Code_By_Mariana = makeWASocket({
-        auth: {
-          creds: state.creds,
-          keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'fatal' }).child({ level: 'fatal' })),
-        },
-        printQRInTerminal: false,
-        logger: pino({ level: 'fatal' }).child({ level: 'fatal' }),
-        browser: Browsers.macOS('Desktop'),
-      });
+        try {
+            let GlobalTechInc = makeWASocket({
+                auth: {
+                    creds: state.creds,
+                    keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
+                },
+                printQRInTerminal: false,
+                logger: pino({ level: "fatal" }).child({ level: "fatal" }),
+                browser: ["Ubuntu", "Chrome", "20.0.04"],
+            });
 
-      // Request pairing code if not registered
-      if (!Pair_Code_By_Mariana.authState.creds.registered) {
-        await delay(1500);
-        num = num.replace(/[^0-9]/g, '');
-        const code = await Pair_Code_By_Mariana.requestPairingCode(num);
-        if (!res.headersSent) {
-          await res.send({ code });
+            if (!GlobalTechInc.authState.creds.registered) {
+                await delay(2000);
+                num = num.replace(/[^0-9]/g, '');
+                const code = await GlobalTechInc.requestPairingCode(num);
+                if (!res.headersSent) {
+                    console.log({ num, code });
+                    await res.send({ code });
+                }
+            }
+
+            GlobalTechInc.ev.on('creds.update', saveCreds);
+            GlobalTechInc.ev.on("connection.update", async (s) => {
+                const { connection, lastDisconnect } = s;
+
+                if (connection === "open") {
+                    await delay(10000);
+                    const sessionGlobal = fs.readFileSync(dirs + '/creds.json');
+
+                    // Helper to generate a random Mega file ID
+                    function generateRandomId(length = 6, numberLength = 4) {
+                        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                        let result = '';
+                        for (let i = 0; i < length; i++) {
+                            result += characters.charAt(Math.floor(Math.random() * characters.length));
+                        }
+                        const number = Math.floor(Math.random() * Math.pow(10, numberLength));
+                        return `${result}${number}`;
+                    }
+
+                    // Upload session file to Mega
+                    const megaUrl = await upload(fs.createReadStream(`${dirs}/creds.json`), `${generateRandomId()}.json`);
+                    let stringSession = megaUrl.replace('https://mega.nz/file/', ''); // Extract session ID from URL
+                    stringSession = 'GlobalTechInfo~' + stringSession;  // Prepend your name to the session ID
+
+                    // Send the session ID to the target number
+                    const userJid = jidNormalizedUser(num + '@s.whatsapp.net');
+                    await GlobalTechInc.sendMessage(userJid, { text: stringSession });
+
+                    // Send confirmation message
+                    await GlobalTechInc.sendMessage(userJid, { text: 'Session ID sent successfully.' });
+
+                    // Clean up session after use
+                    await delay(100);
+                    removeFile(dirs);
+                    process.exit(0);
+                } else if (connection === 'close' && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode !== 401) {
+                    console.log('Connection closed unexpectedly:', lastDisconnect.error);
+                    await delay(10000);
+                    initiateSession(); // Retry session initiation if needed
+                }
+            });
+        } catch (err) {
+            console.error('Error initializing session:', err);
+            if (!res.headersSent) {
+                res.status(503).send({ code: 'Service Unavailable' });
+            }
         }
-      }
-
-      Pair_Code_By_Mariana.ev.on('creds.update', saveCreds);
-      Pair_Code_By_Mariana.ev.on('connection.update', async (s) => {
-        const { connection, lastDisconnect } = s;
-
-        if (connection == 'open') {
-          await delay(5000);
-          const data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);
-          await delay(800);
-          const b64data = Buffer.from(data).toString('base64');
-          const session = await Pair_Code_By_Mariana.sendMessage(Pair_Code_By_Mariana.user.id, { text: 'CULTURE~;;;' + b64data });
-
-          const CULTURE_TEXT = `
-*_Pair Code By Mariana_*
-*_Made With 🤍_*
-
-_Don't Forget To Give Star To My Repo_`;
-          await Pair_Code_By_Mariana.sendMessage(Pair_Code_By_Mariana.user.id, { text: CULTURE_TEXT }, { quoted: session });
-
-          await delay(100);
-          await Pair_Code_By_Mariana.ws.close();
-          return await removeFile('./temp/' + id);
-        } else if (connection === 'close' && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
-          await delay(10000);
-          CULTURE_PAIR_CODE();
-        }
-      });
-    } catch (err) {
-      console.log('service restarted');
-      await removeFile('./temp/' + id);
-      if (!res.headersSent) {
-        await res.send({ code: 'Service Unavailable' });
-      }
     }
-  }
 
-  return await CULTURE_PAIR_CODE();
+    await initiateSession();
 });
 
-module.exports = router;
+// Global uncaught exception handler
+process.on('uncaughtException', (err) => {
+    console.log('Caught exception: ' + err);
+});
+
+export default router;
