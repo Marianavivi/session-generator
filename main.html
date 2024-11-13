@@ -3,29 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Session Generator for QR and Pair Codes">
-  <meta name="keywords" content="QR Code, Pair Code, GitHub, Session Generator">
-  <meta name="author" content="Mariana">
-  <title>Session Generator</title>
   <style>
     body {
       display: flex;
-      flex-direction: column;
+      flex-direction: column; /* Stack items vertically */
       align-items: center;
       justify-content: center;
       height: 100vh;
       margin: 0;
-      background-color: black;
-      background-image: url('https://files.catbox.moe/ijsneb.jpg');
-      background-size: cover;
-      background-position: center;
+      background-image: url("https://i.ibb.co/QcP3Byh/ccb5e017f3895c328123f0b95ee2b9ec.jpg"); /* Set the background image */
       background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
     }
 
     .btn {
-      --color: #e5f5f1;
-      --color2: rgb(0, 0, 0);
-      width: 200px;
+      --color: #FFC0CB;
+      --color2: rgb(10, 25, 30);
+      width: 200px; /* Set a fixed width for the buttons */
       padding: 0.8em 1.75em;
       background-color: transparent;
       border-radius: 6px;
@@ -35,12 +30,12 @@
       overflow: hidden;
       cursor: pointer;
       z-index: 1;
-      font-weight: 300;
+      font-weight: 900;
       font-size: 17px;
       font-family: 'Roboto', 'Segoe UI', sans-serif;
       text-transform: uppercase;
       color: var(--color);
-      margin-bottom: 24px;
+      margin-bottom: 10px; /* Add margin to separate buttons */
     }
 
     .btn::after, .btn::before {
@@ -83,9 +78,11 @@
 </head>
 <body>
 
-  <button onclick="window.open(`/qr`)" class="btn">QR Code</button>
-  <button onclick="window.open(`/pair`)" class="btn">Pair Code</button>
-  <button onclick="window.open(`https://github.com/Marianavivi/Culture`)" class="btn">GitHub</button>
-  
+  <button onclick="window.open(`/pair`)" class="btn">pair code</button>
+  <button onclick="window.open(`https://github.com/GlobalTechInfo`)" class="btn">github</button>
+  <button onclick="window.open(`https://youtube.com/@GlobalTechInfo`)" class="btn">youtube</button>
+  <button onclick="window.open(`https://t.me/GlobalTechInc`)" class="btn">telegram</button>
+  <button onclick="window.open(`https://chat.whatsapp.com/CodjsOI43Ek2PXdQOC1iZK`)" class="btn">whatsapp</button>
+
 </body>
 </html>
