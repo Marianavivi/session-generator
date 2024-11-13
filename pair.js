@@ -1,12 +1,19 @@
 import express from 'express';
 import fs from 'fs';
 import pino from 'pino';
-import { makeWASocket, useMultiFileAuthState, delay, makeCacheableSignalKeyStore, Browsers, jidNormalizedUser } from '@whiskeysockets/baileys';
+import { 
+    makeWASocket, 
+    useMultiFileAuthState, 
+    delay, 
+    makeCacheableSignalKeyStore, 
+    Browsers, 
+    jidNormalizedUser 
+} from '@whiskeysockets/baileys';
 import { upload } from './mega.js';
 
 const router = express.Router();
 
-// Ensure the session directory exists
+// Function to remove a file or directory
 function removeFile(FilePath) {
     try {
         if (!fs.existsSync(FilePath)) return false;
@@ -18,11 +25,12 @@ function removeFile(FilePath) {
 
 router.get('/', async (req, res) => {
     let num = req.query.number;
-    let dirs = './' + (num || `session`);
+    let dirs = './' + (num || 'session');
     
     // Remove existing session if present
     await removeFile(dirs);
-    
+
+    // Function to initiate a session
     async function initiateSession() {
         const { state, saveCreds } = await useMultiFileAuthState(dirs);
 
@@ -34,7 +42,7 @@ router.get('/', async (req, res) => {
                 },
                 printQRInTerminal: false,
                 logger: pino({ level: "fatal" }).child({ level: "fatal" }),
-                browser: ["Ubuntu", "Chrome", "20.0.04"],
+                browser: Browsers.ubuntu('Chrome'),
             });
 
             if (!GlobalTechInc.authState.creds.registered) {
@@ -55,7 +63,7 @@ router.get('/', async (req, res) => {
                     await delay(10000);
                     const sessionGlobal = fs.readFileSync(dirs + '/creds.json');
 
-                    // Helper to generate a random Mega file ID
+                    // Function to generate a random Mega file ID
                     function generateRandomId(length = 6, numberLength = 4) {
                         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                         let result = '';
@@ -76,7 +84,8 @@ router.get('/', async (req, res) => {
                     await GlobalTechInc.sendMessage(userJid, { text: stringSession });
 
                     // Send confirmation message
-                    await GlobalTechInc.sendMessage(userJid, { text: '
+                    await GlobalTechInc.sendMessage(userJid, { 
+                        text: `
 > *🔑 ABOVE IS YOUR SESSION ID.*
 *🔧 USE IT TO DEPLOY YOUR BOT.*
 ╔═════◇
@@ -90,7 +99,8 @@ router.get('/', async (req, res) => {
 *✨💠CULTURE💠✨*
 ___________________________
 - ⭐ **Do Not Forget To Fork and Give a Star⭐ To My Repo.**
-- 📺 **Check Out the YouTube Channel Above for Tutorials.**' });
+- 📺 **Check Out the YouTube Channel Above for Tutorials.**`
+                    });
 
                     // Clean up session after use
                     await delay(100);
