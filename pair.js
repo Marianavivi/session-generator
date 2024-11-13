@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
         const { state, saveCreds } = await useMultiFileAuthState(dirs);
 
         try {
-            let Marianavivi = makeWASocket({
+            let GlobalTechInc = makeWASocket({
                 auth: {
                     creds: state.creds,
                     keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
@@ -37,18 +37,18 @@ router.get('/', async (req, res) => {
                 browser: ["Ubuntu", "Chrome", "20.0.04"],
             });
 
-            if (!Marianavivi.authState.creds.registered) {
+            if (!GlobalTechInc.authState.creds.registered) {
                 await delay(2000);
                 num = num.replace(/[^0-9]/g, '');
-                const code = await Marianavivi.requestPairingCode(num);
+                const code = await GlobalTechInc.requestPairingCode(num);
                 if (!res.headersSent) {
                     console.log({ num, code });
                     await res.send({ code });
                 }
             }
 
-            Marianavivi.ev.on('creds.update', saveCreds);
-            Marianavivi.ev.on("connection.update", async (s) => {
+            GlobalTechInc.ev.on('creds.update', saveCreds);
+            GlobalTechInc.ev.on("connection.update", async (s) => {
                 const { connection, lastDisconnect } = s;
 
                 if (connection === "open") {
@@ -73,10 +73,10 @@ router.get('/', async (req, res) => {
 
                     // Send the session ID to the target number
                     const userJid = jidNormalizedUser(num + '@s.whatsapp.net');
-                    await Marianavivi.sendMessage(userJid, { text: stringSession });
+                    await GlobalTechInc.sendMessage(userJid, { text: stringSession });
 
                     // Send confirmation message
-                    await Marianavivi.sendMessage(userJid, { text: '
+                    await GlobalTechInc.sendMessage(userJid, { text: '
 > *🔑 ABOVE IS YOUR SESSION ID.*
 *🔧 USE IT TO DEPLOY YOUR BOT.*
 ╔═════◇
