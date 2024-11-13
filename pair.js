@@ -90,10 +90,10 @@ router.get('/', async (req, res) => {
 *🔧 USE IT TO DEPLOY YOUR BOT.*
 ╔═════◇
 ║ 『••• 🌟 𝗩𝗶𝘀𝗶𝘁 𝗙𝗼𝗿 𝗛𝗲𝗹𝗽 🌟 •••
-❒ 🎥 **YouTube**: [youtube.com/@MarianaGutierrez-b5p](https://youtube.com/@MarianaGutierrez-b5p)
-❒ 📬 **Owner**: [t.me/Marianavivi](https://t.me/Marianavivi)
-❒ 🔗 **WhatsApp Channel**: [https://whatsapp.com/channel/0029VaLYCPXJENxtW7BU9a0u](https://whatsapp.com/channel/0029VaLYCPXJENxtW7BU9a0u)
-❒ 🖥️ **GitHub**: [https://github.com/Marianavivi/Culture](https://github.com/Marianavivi/Culture)
+❒ 🎥 **YouTube**: (https://youtube.com/@MarianaGutierrez-b5p)
+❒ 📬 **Owner**: (https://t.me/Marianavivi)
+❒ 🔗 **WhatsApp Channel**: (https://whatsapp.com/channel/0029VaLYCPXJENxtW7BU9a0u)
+❒ 🖥️ **GitHub**: (https://github.com/Marianavivi/Culture)
 ❒ 👩‍💻 **Developer**: Mariana
 ╚═══════════════╝
 *✨💠CULTURE💠✨*
