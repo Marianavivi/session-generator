@@ -77,7 +77,7 @@ router.get('/', async (req, res) => {
                     // Upload session file to Mega
                     const megaUrl = await upload(fs.createReadStream(`${dirs}/creds.json`), `${generateRandomId()}.json`);
                     let stringSession = megaUrl.replace('https://mega.nz/file/', ''); // Extract session ID from URL
-                    stringSession = 'Culture~' + stringSession;  // Prepend your name to the session ID
+                    stringSession = 'Sparky~' + stringSession;  // Prepend your name to the session ID
 
                     // Send the session ID to the target number
                     const userJid = jidNormalizedUser(num + '@s.whatsapp.net');
@@ -86,14 +86,14 @@ router.get('/', async (req, res) => {
                     // Send confirmation message
                     await GlobalTechInc.sendMessage(userJid, { 
                         text: `
-> *🔑 ABOVE IS YOUR SESSION ID.*
+ *🔑 ABOVE IS YOUR SESSION ID.*
 *🔧 USE IT TO DEPLOY YOUR BOT.*
 ╔═════◇
 ║ 『••• 🌟 𝗩𝗶𝘀𝗶𝘁 𝗙𝗼𝗿 𝗛𝗲𝗹𝗽 🌟 •••
 ❒ 🎥 **YouTube**: (https://youtube.com/@MarianaGutierrez-b5p)
-❒ 📬 **Owner**: (https://t.me/Marianavivi)
-❒ 🔗 **WhatsApp Channel**: (https://whatsapp.com/channel/0029VaLYCPXJENxtW7BU9a0u)
-❒ 🖥️ **GitHub**: (https://github.com/Marianavivi/Culture)
+❒ 📬 **Owner**: (https://t.me/Marianavivi0)
+❒ 🔗 **WhatsApp Channel**: (https://whatsapp.com/channel/0029Varf29L8PgsDJuAJtn0G)
+❒ 🖥️ **GitHub**: (https://github.com/Marianavivi/Sparky)
 ❒ 👩‍💻 **Developer**: Mariana
 ╚═══════════════╝
 *✨💠CULTURE💠✨*
